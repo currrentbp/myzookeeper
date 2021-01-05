@@ -1,5 +1,7 @@
 package com.currentbp.nettyTest.v1;
 
+import com.alibaba.fastjson.JSON;
+import com.currentbp.agreement.BaseAgreement;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -29,8 +31,13 @@ public class SimpleNettyServerHandler extends ChannelInboundHandlerAdapter {
         // 释放资源，这行很关键
         result.release();
 
+        BaseAgreement responseAgreement = JSON.parseObject(resultStr, BaseAgreement.class);
+        responseAgreement.setOriginalId(responseAgreement.getId());
+        responseAgreement.setId("2");
+        responseAgreement.setType(1);
+        responseAgreement.setBody(responseAgreement.getBody()+" ,i say yes!");
         // 向客户端发送消息
-        String response = "hello client!";
+        String response = JSON.toJSONString(responseAgreement);
         // 在当前场景下，发送的数据必须转换成ByteBuf数组
         ByteBuf encoded = ctx.alloc().buffer(4 * response.length());
         encoded.writeBytes(response.getBytes());
