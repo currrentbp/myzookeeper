@@ -43,6 +43,7 @@ public class SimpleNettyServerHandler extends ChannelInboundHandlerAdapter {
         encoded.writeBytes(response.getBytes());
         ctx.write(encoded);
         ctx.flush();
+        ctx.close();
     }
 
     /**
