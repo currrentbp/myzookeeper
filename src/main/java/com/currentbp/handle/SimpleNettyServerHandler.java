@@ -1,4 +1,4 @@
-package com.currentbp.nettyTest.v1;
+package com.currentbp.handle;
 
 import com.alibaba.fastjson.JSON;
 import com.currentbp.agreement.BaseAgreement;

@@ -1,5 +1,6 @@
-package com.currentbp.nettyTest.v1;
+package com.currentbp.server;
 
+import com.currentbp.nettyTest.v1.SimpleNettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
