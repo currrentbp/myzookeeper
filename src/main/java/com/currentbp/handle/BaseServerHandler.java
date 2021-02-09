@@ -17,6 +17,7 @@ public class BaseServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println("===>exceptionCaught,msg:" + cause.getMessage());
         // 当出现异常就关闭连接
         cause.printStackTrace();
         ctx.close();
@@ -30,6 +31,7 @@ public class BaseServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("===>channelReadComplete, over!");
         ctx.flush();
     }
 }
