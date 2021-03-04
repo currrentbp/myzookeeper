@@ -39,39 +39,20 @@ public class SimpleNettyServer {
             /**
              * 使用了多少线程以及如何将它们映射到创建的通道取决于EventLoopGroup实现，甚至可以通过构造函数进行配置。
              * 设置循环线程组，前者用于处理客户端连接事件，后者用于处理网络IO(server使用两个参数这个)
-             * public ServerBootstrap group(EventLoopGroup group)
-             * public ServerBootstrap group(EventLoopGroup parentGroup, EventLoopGroup childGroup)
              */
             serverBootstrap.group(bossGroup, workerGroup)           //绑定两个线程组
                     // 用于构造socketchannel工厂
                     .channel(NioServerSocketChannel.class)   //指定NIO的模式
-                    /**
-                     * @Description: 初始化器，channel注册后，会执行里面的相应的初始化方法，传入自定义客户端Handle（服务端在这里操作）
-                     *
-                     @Override
-                     protected void initChannel(SocketChannel channel) throws Exception {
-                     // 通过SocketChannel去获得对应的管道
-                     ChannelPipeline pipeline = channel.pipeline();
-
-                     // 通过管道，添加handler
-                     pipeline.addLast("nettyServerOutBoundHandler", new NettyServerOutBoundHandler());
-                     pipeline.addLast("nettyServerHandler", new NettyServerHandler());
-                     }
-                      * 子处理器也可以通过下面的内部方法来实现。
-                     */
                     .childHandler(new ChannelInitializer<SocketChannel>() {  // 子处理器，用于处理workerGroup
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-//                            socketChannel.pipeline().addLast(new NettyServerOutBoundHandler());
                             socketChannel.pipeline().addLast(new SimpleNettyServerHandler());
 
                         }
                     });
 
-            // 启动server，绑定端口，开始接收进来的连接，设置8088为启动的端口号，同时启动方式为同步
+            // 启动server，绑定端口，开始接收进来的连接，设置8088为启动的端口号
             ChannelFuture channelFuture = serverBootstrap.bind(8088).sync();
-
-            System.out.println("server start");
-            // 监听关闭的channel，等待服务器 socket 关闭 。设置位同步方式
+            // 监听关闭的channel，等待服务器 socket关闭
             channelFuture.channel().closeFuture().sync();
         } finally {
             //退出线程组

@@ -12,6 +12,8 @@ import com.currentbp.cache.MyKVCache;
 public class HandleKVAgreementStrategy {
 
     public BaseAgreement handleKV(BaseAgreement baseAgreement) {
+        BaseAgreement result = new BaseAgreement();
+
         String id = baseAgreement.getId();
         String body = baseAgreement.getBody();
         KVPermanentSaveAgreement originalKV = JSON.parseObject(body, KVPermanentSaveAgreement.class);
@@ -23,11 +25,14 @@ public class HandleKVAgreementStrategy {
         KVPermanentSaveAgreementConstants.KVAgreementType kvAgreementType = KVPermanentSaveAgreementConstants.KVAgreementType.valueOf(type);
         if (KVPermanentSaveAgreementConstants.KVAgreementType.PULL == kvAgreementType) {
             String value2 = MyKVCache.get(key);
+            KVPermanentSaveAgreement kvPermanentSaveAgreement = new KVPermanentSaveAgreement();
+            kvPermanentSaveAgreement.setKey(key);
+            kvPermanentSaveAgreement.setValue(value2);
+            result.setBody(JSON.toJSONString(kvPermanentSaveAgreement));
         } else if (KVPermanentSaveAgreementConstants.KVAgreementType.PUSH == kvAgreementType) {
             MyKVCache.set(key, value);
         }
 
-        BaseAgreement result = new BaseAgreement();
         result.setOriginalId(id);
         result.setRetCode("success");
         result.setId(id + "_1");
